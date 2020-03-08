@@ -78,6 +78,7 @@ class Hdf4Conan(ConanFile):
         self._cmake.definitions["HDF4_PACKAGE_EXTLIBS"] = False
         self._cmake.definitions["HDF4_BUILD_XDR_LIB"] = True
         self._cmake.definitions["BUILD_TESTING"] = False
+        self._cmake.definitions["HDF4_INSTALL_INCLUDE_DIR"] = os.path.join(self.package_folder, "include", "hdf4")
         self._cmake.definitions["HDF4_BUILD_FORTRAN"] = False
         self._cmake.definitions["HDF4_BUILD_UTILS"] = False
         self._cmake.definitions["HDF4_BUILD_TOOLS"] = False
@@ -95,6 +96,7 @@ class Hdf4Conan(ConanFile):
 
     def package_info(self):
         self.cpp_info.libs = self._get_ordered_libs()
+        self.cpp_info.includedirs.append(os.path.join(self.package_folder, "include", "hdf4"))
         if self.options.shared:
             self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
 
