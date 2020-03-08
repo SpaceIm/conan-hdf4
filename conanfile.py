@@ -94,12 +94,16 @@ class Hdf4Conan(ConanFile):
         os.remove(os.path.join(self.package_folder, "lib", "libhdf4.settings"))
 
     def package_info(self):
+        self.cpp_info.libs = self._get_ordered_libs()
+        if self.options.shared:
+            self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
+
+    def _get_ordered_libs(self):
         libs = ["mfhdf", "xdr", "hdf"]
-        if self.settings.os == "Windows" and not self.options.shared:
+        # See config/cmake_ext_mod/HDFMacros.cmake
+        if self.settings.os == "Windows" and self.settings.compiler != "gcc" and not self.options.shared:
             libs = ["lib" + lib for lib in libs]
         if self.settings.build_type == "Debug":
             debug_postfix = "_D" if self.settings.os == "Windows" else "_debug"
             libs = [lib + debug_postfix for lib in libs]
-        self.cpp_info.libs = libs
-        if self.options.shared:
-            self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
+        return libs
