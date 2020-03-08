@@ -15,11 +15,13 @@ class Hdf4Conan(ConanFile):
     options = {
         "shared": [True, False],
         "fPIC": [True, False],
+        "jpegturbo": [True, False],
         "szip_support": ["None", "with_libaec", "with_szip"]
     }
     default_options = {
         "shared": False,
         "fPIC": True,
+        "jpegturbo": False,
         "szip_support": "None"
     }
 
@@ -42,8 +44,11 @@ class Hdf4Conan(ConanFile):
         del self.settings.compiler.cppstd
 
     def requirements(self):
-        self.requires.add("libjpeg/9d")
         self.requires.add("zlib/1.2.11")
+        if self.options.jpegturbo:
+            self.requires.add("libjpeg-turbo/2.0.4")
+        else:
+            self.requires.add("libjpeg/9d")
         if self.options.szip_support == "with_libaec":
             self.requires.add("libaec/1.0.4")
         elif self.options.szip_support == "with_szip":
@@ -68,7 +73,7 @@ class Hdf4Conan(ConanFile):
         self._cmake.definitions["ONLY_SHARED_LIBS"] = self.options.shared
         self._cmake.definitions["HDF4_ENABLE_COVERAGE"] = False
         self._cmake.definitions["HDF4_ENABLE_DEPRECATED_SYMBOLS"] = True
-        self._cmake.definitions["HDF4_ENABLE_JPEG_LIB_SUPPORT"] = True # HDF can't compile without libjpeg
+        self._cmake.definitions["HDF4_ENABLE_JPEG_LIB_SUPPORT"] = True # HDF can't compile without libjpeg or libjpeg-turbo
         self._cmake.definitions["HDF4_ENABLE_Z_LIB_SUPPORT"] = True # HDF can't compile without zlib
         self._cmake.definitions["HDF4_ENABLE_SZIP_SUPPORT"] = self.options.szip_support != "None"
         if self.options.szip_support == "with_libaec":
