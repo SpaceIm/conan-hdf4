@@ -65,7 +65,7 @@ class Hdf4Conan(ConanFile):
         self._cmake.definitions["HDF4_EXTERNAL_LIB_PREFIX"] = ""
         self._cmake.definitions["HDF4_USE_FOLDERS"] = True
         self._cmake.definitions["HDF4_NO_PACKAGES"] = True
-        self._cmake.definitions["ONLY_SHARED_LIBS"] = False
+        self._cmake.definitions["ONLY_SHARED_LIBS"] = self.options.shared
         self._cmake.definitions["HDF4_ENABLE_COVERAGE"] = False
         self._cmake.definitions["HDF4_ENABLE_DEPRECATED_SYMBOLS"] = True
         self._cmake.definitions["HDF4_ENABLE_JPEG_LIB_SUPPORT"] = True # HDF can't compile without libjpeg
@@ -95,9 +95,10 @@ class Hdf4Conan(ConanFile):
 
     def package_info(self):
         libs = ["mfhdf", "xdr", "hdf"]
-        if self.settings.os == "Windows":
-            self.cpp_info.libs = ["lib" + lib for lib in libs]
-        else:
-            self.cpp_info.libs = libs
+        if self.settings.os == "Windows" and not self.options.shared:
+            libs = ["lib" + lib for lib in libs]
+        if self.settings.build_type == "Debug":
+            libs = [lib + "_debug" for lib in libs]
+        self.cpp_info.libs = libs
         if self.options.shared:
             self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
