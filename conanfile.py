@@ -1,6 +1,7 @@
 import os
 
 from conans import ConanFile, CMake, tools
+from conans.errors import ConanInvalidConfiguration
 
 class Hdf4Conan(ConanFile):
     name = "hdf4"
@@ -16,13 +17,15 @@ class Hdf4Conan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "jpegturbo": [True, False],
-        "szip_support": ["None", "with_libaec", "with_szip"]
+        "szip_support": ["None", "with_libaec", "with_szip"],
+        "szip_encoding": [True, False]
     }
     default_options = {
         "shared": False,
         "fPIC": True,
         "jpegturbo": False,
-        "szip_support": "None"
+        "szip_support": "None",
+        "szip_encoding": False
     }
 
     _cmake = None
@@ -42,6 +45,12 @@ class Hdf4Conan(ConanFile):
     def configure(self):
         del self.settings.compiler.libcxx
         del self.settings.compiler.cppstd
+        if self.options.szip_support == "None":
+            del self.options.szip_encoding
+        elif self.options.szip_support == "with_szip" and \
+             self.options.szip_encoding and \
+             not self.options["szip"].enable_encoding:
+            raise ConanInvalidConfiguration("encoding must be enabled in the dependency (szip:enable_encoding=True)")
 
     def requirements(self):
         self.requires.add("zlib/1.2.11")
@@ -76,10 +85,7 @@ class Hdf4Conan(ConanFile):
         self._cmake.definitions["HDF4_ENABLE_JPEG_LIB_SUPPORT"] = True # HDF can't compile without libjpeg or libjpeg-turbo
         self._cmake.definitions["HDF4_ENABLE_Z_LIB_SUPPORT"] = True # HDF can't compile without zlib
         self._cmake.definitions["HDF4_ENABLE_SZIP_SUPPORT"] = self.options.szip_support != "None"
-        if self.options.szip_support == "with_libaec":
-            self._cmake.definitions["HDF4_ENABLE_SZIP_ENCODING"] = True
-        elif self.options.szip_support == "with_szip":
-            self._cmake.definitions["HDF4_ENABLE_SZIP_ENCODING"] = self.options["szip"].enable_encoding
+        self._cmake.definitions["HDF4_ENABLE_SZIP_ENCODING"] = self.options.get_safe("szip_encoding") or False
         self._cmake.definitions["HDF4_PACKAGE_EXTLIBS"] = False
         self._cmake.definitions["HDF4_BUILD_XDR_LIB"] = True
         self._cmake.definitions["BUILD_TESTING"] = False
