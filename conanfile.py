@@ -98,7 +98,8 @@ class Hdf4Conan(ConanFile):
         if self.settings.os == "Windows" and not self.options.shared:
             libs = ["lib" + lib for lib in libs]
         if self.settings.build_type == "Debug":
-            libs = [lib + "_debug" for lib in libs]
+            debug_postfix = "_D" if self.settings.os == "Windows" else "_debug"
+            libs = [lib + debug_postfix for lib in libs]
         self.cpp_info.libs = libs
         if self.options.shared:
             self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
