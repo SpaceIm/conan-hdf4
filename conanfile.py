@@ -109,6 +109,8 @@ class Hdf4Conan(ConanFile):
         self.cpp_info.includedirs.append(os.path.join(self.package_folder, "include", "hdf4"))
         if self.options.shared:
             self.cpp_info.defines.append("H4_BUILT_AS_DYNAMIC_LIB")
+        if self.settings.os == "Linux" and not self.options.shared:
+            self.cpp_info.system_libs.append("m")
 
     def _get_ordered_libs(self):
         libs = ["mfhdf", "xdr", "hdf"]
