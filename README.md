@@ -4,7 +4,7 @@
 
 | Windows | Linux | macOS |
 |:-------:|:-----:|:-----:|
-|[![Build status](https://ci.appveyor.com/api/projects/status/qd9j0hda584guorx/branch/testing%2F4.2.15?svg=true)](https://ci.appveyor.com/project/SpaceIm/conan-hdf4)|![.github/workflows/conan.yml](https://github.com/SpaceIm/conan-hdf4/workflows/.github/workflows/conan.yml/badge.svg?branch=testing%2F4.2.15)|[![Build Status](https://travis-ci.com/SpaceIm/conan-hdf4.svg?branch=testing%2F4.2.15)](https://travis-ci.com/SpaceIm/conan-hdf4)|
+|[![Build status](https://ci.appveyor.com/api/projects/status/qd9j0hda584guorx/branch/testing%2F4.2.15?svg=true)](https://ci.appveyor.com/project/SpaceIm/conan-hdf4)|[![Build status](https://github.com/SpaceIm/conan-hdf4/workflows/.github/workflows/conan.yml/badge.svg?branch=testing%2F4.2.15)](https://github.com/SpaceIm/conan-hdf4/actions?query=branch%3Atesting%2F4.2.15)|[![Build Status](https://travis-ci.com/SpaceIm/conan-hdf4.svg?branch=testing%2F4.2.15)](https://travis-ci.com/SpaceIm/conan-hdf4)|
 
 ## Description
 
